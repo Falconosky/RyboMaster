@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmtCheckUser->close();
 
         if ($countUser > 0) {
-            $sql = "SELECT password FROM uzytkownicy WHERE nick = ?";
+            $sql = "SELECT password, permission FROM uzytkownicy WHERE nick = ?";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("s", $login);
             $stmt->execute();
@@ -27,6 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $row = $result->fetch_assoc();
             if ($pass === $row['password']) {
                 $_SESSION['user'] = $login;
+                $_SESSION['permission'] = $row['permission'];
                 header("Location: index.php");
                 exit();
             } else {

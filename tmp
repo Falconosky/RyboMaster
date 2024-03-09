@@ -1,0 +1,36 @@
+<?php
+if (isset($_POST['dodaj'])) {
+    include 'connect_database.php';
+
+    $nazwaRyby = $_POST['nazwaRyby']; // Pobierz nazwę ryby z formularza
+
+    // Sprawdź, czy nazwa ryby już istnieje w bazie danych
+    $sqlCheck = "SELECT COUNT(*) FROM baza_ryb WHERE nazwa = ?";
+    $stmtCheck = $conn->prepare($sqlCheck);
+    $stmtCheck->bind_param("s", $nazwaRyby);
+    $stmtCheck->execute();
+    $stmtCheck->bind_result($count);
+    $stmtCheck->fetch();
+    $stmtCheck->close();
+
+    if ($count > 0) {
+        echo "Taka ryba już istnieje w bazie danych.";
+    } else {
+        // Przygotuj i wykonaj zapytanie do dodania nowej ryby
+        $sqlInsert = "INSERT INTO baza_ryb (nazwa, kto_dodal) VALUES (?, ?)";
+        $stmtInsert = $conn->prepare($sqlInsert);
+        $user = $_SESSION['user'];
+        $stmtInsert->bind_param("ss", $nazwaRyby, $user);
+        $stmtInsert->execute();
+
+        if ($stmtInsert->affected_rows > 0) {
+            echo "Ryba została dodana.";
+        } else {
+            echo "Nie udało się dodać ryby.";
+        }
+        $stmtInsert->close();
+    }
+
+    include 'close_database.php';
+}
+?>
