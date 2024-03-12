@@ -1,5 +1,9 @@
 <?php
 session_start();
+if (!isset($_SESSION['user'])) {
+    // Użytkownik nie jest zalogowany, przekieruj do login.php
+    header("Location: login.php");
+}
 ?>
 
 <!DOCTYPE html>
@@ -36,6 +40,14 @@ if ($result->num_rows > 0) {
     echo "</table>"; // Zakończenie tabeli
 } else {
     echo "0 wyników";
+}
+
+// Sprawdź, czy zmienna sesyjna 'permission' istnieje i czy jej wartość jest większa lub równa 4
+if (isset($_SESSION['permission']) && $_SESSION['permission'] >= 4) {
+    // Jeśli tak, wyświetl formularz
+    echo '<form action="dodaj_rybe.php" method="post">
+            <button type="submit" name="add_fish">Dodaj rybe do tego sezonu</button>
+        </form>';
 }
 
 include 'close_database.php'; // Dołączanie pliku close_database.php do zamknięcia połączenia

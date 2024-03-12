@@ -6,9 +6,11 @@ session_start(); // Rozpocznij sesję na początku pliku
 <html>
 <head>
     <title>RyboMaster</title>
+    <?php include 'header.php'; ?>
 </head>
 <body>
 <a href="index.php"><img src="img/start.png" style="width: 5%"/></a>
+
 <?php
 
 if (isset($_GET['logout'])) {
@@ -37,25 +39,50 @@ $userData = $result->fetch_assoc();
 // Tutaj kod dla zalogowanych użytkowników
 echo "Witaj " . htmlspecialchars($userData['vis_nick'] ?? '') . "<br>" . "<br>";
 
+// Pobierz wszystkie ryby z bazy danych
+$allFishQuery = "SELECT nazwa, min_rozmiar, min_waga FROM baza_ryb";
+$allFishResult = $conn->query($allFishQuery);
 
-?>
-<?php
-// Sprawdź, czy zmienna sesyjna 'permission' istnieje i czy jej wartość jest większa lub równa 4
-if (isset($_SESSION['permission']) && $_SESSION['permission'] >= 4) {
-    // Jeśli tak, wyświetl formularz
-    echo '<form action="dodaj_rybe.php" method="post">
-            <button type="submit" name="add_fish">Dodaj rybe do tego sezonu</button>
-        </form>';
+// Pobierz ryby złapane przez użytkownika
+$caughtFishQuery = $conn->prepare("SELECT DISTINCT nazwa_ryby FROM polowy WHERE uzytkownik = ?");
+$caughtFishQuery->bind_param("s", $user);
+$caughtFishQuery->execute();
+$caughtFishResult = $caughtFishQuery->get_result();
+
+$caughtFish = [];
+while ($fish = $caughtFishResult->fetch_assoc()) {
+    $caughtFish[] = $fish['nazwa_ryby'];
 }
-?>
 
-<?php
-// Sprawdź, czy zmienna sesyjna 'permission' istnieje i czy jej wartość jest większa lub równa 4
-if (isset($_SESSION['permission']) && $_SESSION['permission'] >= 5) {
-    // Jeśli tak, wyświetl formularz
-    echo '<form action="user_manager.php" method="post">
-            <button type="submit" name="user_manager">Zarzadzaj użytkownikami</button>
-        </form>';
+// Tworzymy listę wszystkich ryb
+$allFish = [];
+while ($fish = $allFishResult->fetch_assoc()) {
+    $allFish[$fish['nazwa']] = $fish; // Poprawiono klucz, na podstawie którego zapisywane są informacje o rybie
+}
+
+// Wyszukujemy ryby, których użytkownik jeszcze nie złapał
+$notCaughtFish = array_diff_key($allFish, array_flip($caughtFish)); // Użyto array_flip dla lepszej wydajności
+
+// Wyświetlenie tabeli z rybami, których użytkownik jeszcze nie złapał
+echo "<h2>Ryby, których jeszcze nie złapałeś:</h2>";
+if (!empty($notCaughtFish)) {
+    echo "<table border='1'>
+    <tr>
+        <th>Nazwa ryby</th>
+        <th>Minimalna waga</th>
+        <th>Minimalny rozmiar</th>
+    </tr>";
+
+    foreach ($notCaughtFish as $name => $info) {
+        echo "<tr>
+            <td>$name</td>
+            <td>" . ($info['min_waga'] ? $info['min_waga'] : '') . "</td>
+            <td>" . ($info['min_rozmiar'] ? $info['min_rozmiar'] : '') . "</td>
+        </tr>";
+    }
+    echo "</table>";
+} else {
+    echo "<p>Gratulacje! Złapałeś już wszystkie dostępne ryby!</p>";
 }
 ?>
 
@@ -65,51 +92,67 @@ if (isset($_SESSION['permission']) && $_SESSION['permission'] >= 5) {
 <form action="dodaj_polow.php" method="post">
     <button type="submit">Dodaj połów</button>
 </form>
+<form action="topka.php" method="post">
+    <button type="submit">Zobacz wyniki</button>
+</form>
 <form action="show_profile.php" method="post">
     <button type="submit">Wyswietl szczegóły konta</button>
 </form>
-
-<a href="?logout">Wyloguj</a>
 
 <?php
 
 $uzytkownik = $_SESSION['user'];
 
 // Zapytanie SQL do pobrania polowów danego użytkownika, posortowanych według wagi
-$query = "SELECT nazwa_ryby, waga, rozmiar, miejscowka, data FROM polowy WHERE uzytkownik = ? ORDER BY waga DESC";
+$query = "SELECT id, nazwa_ryby, waga, rozmiar, miejscowka, data, zdj1, zdj2, zdj3 FROM polowy WHERE uzytkownik = ? ORDER BY waga DESC";
+
 $stmt = $conn->prepare($query);
 $stmt->bind_param("s", $uzytkownik);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// Rozpoczęcie tworzenia tabeli HTML do wyświetlenia polowów
-echo "<table border='1'>
-<tr>
-    <th>Nazwa ryby</th>
-    <th>Waga</th>
-    <th>Rozmiar</th>
-    <th>Miejscówka</th>
-    <th>Data</th>
-</tr>";
+echo "<div class='catches-container'>";
 
-// Wypełnienie tabeli danymi
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        echo "<tr>
-            <td>" . htmlspecialchars($row['nazwa_ryby']) . "</td>
-            <td>" . htmlspecialchars($row['waga']) . "</td>
-            <td>" . ($row['rozmiar'] > 0 ? htmlspecialchars($row['rozmiar']) : '') . "</td>
-            <td>" . htmlspecialchars($row['miejscowka']) . "</td>
-            <td>" . htmlspecialchars($row['data']) . "</td>
-        </tr>";
+        echo "<div class='catch-item'>
+                <div class='catch-info'>
+                    <div>Nazwa ryby: " . htmlspecialchars($row['nazwa_ryby']) . "</div>
+                    <div>Waga: " . htmlspecialchars($row['waga']) . "</div>
+                    <div>Rozmiar: " . ($row['rozmiar'] > 0 ? htmlspecialchars($row['rozmiar']) : '') . "</div>
+                    <div>Miejscówka: " . htmlspecialchars($row['miejscowka']) . "</div>
+                    <div>Data: " . htmlspecialchars($row['data']) . "</div>
+                </div>
+                <div class='catch-photos'>
+                    <img src='pokaz_zdjecie.php?id=" . $row['id'] . "&img=zdj1' width='100'>
+                    " . (!empty($row['zdj2']) ? "<img src='pokaz_zdjecie.php?id=" . $row['id'] . "&img=zdj2' width='100'>" : '') . "
+                    " . (!empty($row['zdj3']) ? "<img src='pokaz_zdjecie.php?id=" . $row['id'] . "&img=zdj3' width='100'>" : '') . "
+                </div>
+                <div class='catch-action'>
+                    <form action='usun_polow_index.php' method='post' onsubmit='return confirm(\"Czy na pewno chcesz usunąć ten połów?\");'>
+                        <input type='hidden' name='id_polowu' value='" . $row['id'] . "'/>
+                        <input type='submit' value='Usuń'/>
+                    </form>
+                </div>
+              </div>";
     }
 } else {
-    echo "<tr><td colspan='5'>Brak polowów.</td></tr>";
+    echo "<div>Brak polowów.</div>";
 }
 
-echo "</table>"; // Zamknięcie tabeli
+echo "</div>"; // Zamknięcie diva zawierającego wszystkie połowy
 
 $stmt->close();
+
+echo "<a href='?logout'>Wyloguj</a>";
+// Sprawdź, czy zmienna sesyjna 'permission' istnieje i czy jej wartość jest większa lub równa 4
+if (isset($_SESSION['permission']) && $_SESSION['permission'] >= 5) {
+    // Jeśli tak, wyświetl formularz
+    echo '<form action="user_manager.php" method="post">
+            <button type="submit" name="user_manager">Zarzadzaj użytkownikami</button>
+        </form>';
+}
+
 include 'close_database.php'; // Dołączenie pliku odpowiedzialnego za zamknięcie połączenia z bazą danych
 ?>
 

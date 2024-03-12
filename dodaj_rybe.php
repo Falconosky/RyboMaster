@@ -1,5 +1,9 @@
 <?php
 session_start();
+if (!isset($_SESSION['user'])) {
+    // Użytkownik nie jest zalogowany, przekieruj do login.php
+    header("Location: login.php");
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['nazwa']) && (!empty($_POST['min_waga']) || !empty($_POST['min_rozmiar']))) {
     include 'connect_database.php';

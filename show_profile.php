@@ -1,5 +1,9 @@
 <?php
 session_start();
+if (!isset($_SESSION['user'])) {
+    // Użytkownik nie jest zalogowany, przekieruj do login.php
+    header("Location: login.php");
+}
 include 'connect_database.php';
 
 $user = $_SESSION['user'] ?? ''; // Pobranie loginu użytkownika z sesji
