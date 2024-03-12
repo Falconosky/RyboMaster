@@ -14,30 +14,37 @@ if (!isset($_SESSION['user'])) {
     <title>Page Title</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
-    <script src='main.js'></script>
 </head>
 <body>
 <a href="index.php"><img src="img/start.png" style="width: 5%"/></a>
 <?php
-include 'connect_database.php'; // Dołączanie pliku connect_database.php do otwarcia połączenia
+include 'connect_database.php';
 
-$query = "SELECT * FROM baza_ryb"; // Zapytanie SQL
-$result = $conn->query($query); // Wykonanie zapytania
+$query = "SELECT * FROM baza_ryb";
+$result = $conn->query($query);
 
 if ($result->num_rows > 0) {
-    // Rozpoczynanie tabeli i dodawanie nagłówków
-    echo "<table border='1'><tr><th>Nazwa</th><th>Minimalna Waga</th><th>Minimalny Rozmiar</th><th>Kto Dodał</th><th>Kiedy Dodał</th></tr>";
-    // Wyświetlanie danych z każdego wiersza
+    echo "<table border='1'><tr><th>Nazwa</th><th>Minimalna Waga</th><th>Minimalny Rozmiar</th><th>Kto Dodał</th><th>Kiedy Dodał</th>";
+    // Sprawdzanie uprawnień użytkownika
+    if (isset($_SESSION['permission']) && $_SESSION['permission'] >= 4) {
+        echo "<th>Akcje</th>"; // Dodatkowa kolumna dla akcji, jeśli użytkownik ma odpowiednie uprawnienia
+    }
+    echo "</tr>";
     while($row = $result->fetch_assoc()) {
         echo "<tr>
                 <td>" . $row["nazwa"] . "</td>
                 <td>" . ($row["min_waga"] == 0 ? "" : $row["min_waga"]) . "</td>
                 <td>" . ($row["min_rozmiar"] == 0 ? "" : $row["min_rozmiar"]) . "</td>
                 <td>" . $row["kto_dodal"] . "</td>
-                <td>" . $row["kiedy_dodal"] . "</td>
-                </tr>";
+                <td>" . $row["kiedy_dodal"] . "</td>";
+        // Dodanie linku do usunięcia dla uprawnionych użytkowników
+        if (isset($_SESSION['permission']) && $_SESSION['permission'] >= 4) {
+            echo "<td><a href='#' onclick='potwierdzUsuniecie(\"" . urlencode($row["nazwa"]) . "\")'>Usuń</a></td>";
+
+        }
+        echo "</tr>";
     }
-    echo "</table>"; // Zakończenie tabeli
+    echo "</table>";
 } else {
     echo "0 wyników";
 }
