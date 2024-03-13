@@ -1,0 +1,52 @@
+/* Styl dla tła modala */
+.modal {
+  display: none; /* Ukryty domyślnie */
+  position: fixed; /* Pozostaje na miejscu nawet przy przewijaniu strony */
+  z-index: 1; /* Siedzi na wierzchu */
+  padding-top: 100px; /* Lokalizacja od góry */
+  left: 0;
+  top: 0;
+  width: 100%; /* Pełna szerokość */
+  height: 100%; /* Pełna wysokość */
+  overflow: auto; /* Włącza przewijanie, jeśli potrzebne */
+  background-color: rgb(0,0,0); /* Ciemne tło */
+  background-color: rgba(0,0,0,0.9); /* Ciemne tło z lekką przezroczystością */
+}
+
+/* Styl dla obrazka w modalu */
+.modal-content {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+}
+
+/* Styl dla tekstu pod obrazkiem */
+#caption {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+  text-align: center;
+  color: #ccc;
+  padding: 10px 0;
+  height: 150px;
+}
+
+/* Styl dla przycisku zamknięcia (krzyżyka) */
+.close {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.close:hover,
+.close:focus {
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
+}

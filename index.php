@@ -104,7 +104,7 @@ if (!empty($notCaughtFish)) {
 $uzytkownik = $_SESSION['user'];
 
 // Zapytanie SQL do pobrania polowów danego użytkownika, posortowanych według wagi
-$query = "SELECT id, nazwa_ryby, waga, rozmiar, miejscowka, data, zdj1, zdj2, zdj3 FROM polowy WHERE uzytkownik = ? ORDER BY waga DESC";
+$query = "SELECT id, nazwa_ryby, waga, rozmiar, miejscowka, data, zdj1, zdj2, zdj3 FROM polowy WHERE uzytkownik = ? ORDER BY data DESC";
 
 $stmt = $conn->prepare($query);
 $stmt->bind_param("s", $uzytkownik);
@@ -117,16 +117,26 @@ if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         echo "<div class='catch-item'>
                 <div class='catch-info'>
-                    <div>Nazwa ryby: " . htmlspecialchars($row['nazwa_ryby']) . "</div>
-                    <div>Waga: " . htmlspecialchars($row['waga']) . "</div>
-                    <div>Rozmiar: " . ($row['rozmiar'] > 0 ? htmlspecialchars($row['rozmiar']) : '') . "</div>
-                    <div>Miejscówka: " . htmlspecialchars($row['miejscowka']) . "</div>
-                    <div>Data: " . htmlspecialchars($row['data']) . "</div>
+                    <div class='opis_ryby'>Nazwa ryby: " . htmlspecialchars($row['nazwa_ryby']) . "</div>
+                    <div class='opis_ryby'>Waga: " . htmlspecialchars($row['waga']) . "</div>
+                    <div class='opis_ryby'>Rozmiar: " . ($row['rozmiar'] > 0 ? htmlspecialchars($row['rozmiar']) : '') . "</div>
+                    <div class='opis_ryby'>Miejscówka: " . htmlspecialchars($row['miejscowka']) . "</div>
+                    <div class='opis_ryby'>Data: " . htmlspecialchars($row['data']) . "</div>
                 </div>
                 <div class='catch-photos'>
-                    <img src='pokaz_zdjecie.php?id=" . $row['id'] . "&img=zdj1' width='100'>
-                    " . (!empty($row['zdj2']) ? "<img src='pokaz_zdjecie.php?id=" . $row['id'] . "&img=zdj2' width='100'>" : '') . "
-                    " . (!empty($row['zdj3']) ? "<img src='pokaz_zdjecie.php?id=" . $row['id'] . "&img=zdj3' width='100'>" : '') . "
+                    <div class='img_shadow'><div class='crop_photo'>
+                        <img class='clickable-image' src='pokaz_zdjecie.php?id=" . $row['id'] . "&img=zdj1'>
+                    </div></div>
+                    " . (!empty($row['zdj2']) ? "
+                    <div class='img_shadow'><div class='crop_photo'>
+                        <img class='clickable-image' src='pokaz_zdjecie.php?id=" . $row['id'] . "&img=zdj2'>
+                    </div></div>
+                    " : '') . "
+                    " . (!empty($row['zdj3']) ? "
+                    <div class='img_shadow'><div class='crop_photo'>
+                        <img class='clickable-image' src='pokaz_zdjecie.php?id=" . $row['id'] . "&img=zdj3'>
+                    </div></div>
+                    " : '') . "
                 </div>
                 <div class='catch-action'>
                     <form action='usun_polow_index.php' method='post' onsubmit='return confirm(\"Czy na pewno chcesz usunąć ten połów?\");'>

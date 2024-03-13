@@ -9,13 +9,14 @@ if (!isset($_SESSION['user'])) {
 
 include 'connect_database.php';
 
-// Pobranie listy użytkowników, którzy złapali przynajmniej jedną rybę
-$usersQuery = "SELECT DISTINCT uzytkownik FROM polowy";
-$usersResult = $conn->query($usersQuery);
+// Pobranie listy użytkowników wraz z liczbą różnych złapanych przez nich ryb, posortowanych od największej do najmniejszej liczby
+$usersQuery = "
+SELECT uzytkownik, COUNT(DISTINCT nazwa_ryby) AS liczba_zlapanych_ryb
+FROM polowy
+GROUP BY uzytkownik
+ORDER BY liczba_zlapanych_ryb DESC";
 
-$allFishQuery = "SELECT nazwa FROM baza_ryb";
-$allFishResult = $conn->query($allFishQuery);
-$allFish = $allFishResult->fetch_all(MYSQLI_ASSOC);
+$usersResult = $conn->query($usersQuery);
 
 echo "<!DOCTYPE html>
 <html>
@@ -26,71 +27,58 @@ echo "<!DOCTYPE html>
 <a href='index.php'><img src='img/start.png' style='width: 5%'/></a>
 <h1>Topka użytkowników</h1>";
 
-// Iteracja przez listę użytkowników i wyświetlenie ich topki
 while ($userRow = $usersResult->fetch_assoc()) {
     $user = $userRow['uzytkownik'];
+    $numberOfCaughtFish = $userRow['liczba_zlapanych_ryb'];
 
-    $query = "SELECT vis_nick FROM uzytkownicy WHERE nick = ?";
-
-    // Przygotowanie i wykonanie zapytania
-    if ($stmt = $conn->prepare($query)) {
-        $stmt->bind_param("s", $user); // "s" oznacza, że parametr jest typu string
+    // Pobranie widocznej nazwy użytkownika
+    $visNickQuery = "SELECT vis_nick FROM uzytkownicy WHERE nick = ?";
+    if ($stmt = $conn->prepare($visNickQuery)) {
+        $stmt->bind_param("s", $user);
         $stmt->execute();
-        
-        $result = $stmt->get_result(); // Pobranie wyników zapytania
+        $result = $stmt->get_result();
         if ($row = $result->fetch_assoc()) {
-            $vis_nick = $row['vis_nick']; // Pobranie vis_nick z wyniku zapytania
+            $vis_nick = $row['vis_nick'];
         }
-        
-        $stmt->close(); // Zamknięcie zapytania
+        $stmt->close();
     }
 
-    // Pobierz ryby złapane przez użytkownika
-    $caughtFishQuery = $conn->prepare("SELECT DISTINCT nazwa_ryby FROM polowy WHERE uzytkownik = ?");
-    $caughtFishQuery->bind_param("s", $user);
-    $caughtFishQuery->execute();
-    $caughtFishResult = $caughtFishQuery->get_result();
-    $caughtFish = $caughtFishResult->fetch_all(MYSQLI_ASSOC);
+    echo "<h2>Użytkownik <a href='history.php?nick=$user'>$vis_nick</a> złapał $numberOfCaughtFish różnych ryb</h2>";
 
-    $caughtFishNames = array_column($caughtFish, 'nazwa_ryby');
+    // Pobierz informacje o złapanych rybach przez użytkownika
+    $caughtFishQuery = "
+    SELECT nazwa_ryby, MAX(waga) AS max_waga, MAX(rozmiar) AS max_rozmiar
+    FROM polowy
+    WHERE uzytkownik = ?
+    GROUP BY nazwa_ryby
+    ORDER BY max_waga DESC, max_rozmiar DESC";
 
-    $notCaughtFish = []; // Tablica na ryby, których użytkownik jeszcze nie złapał
+    $caughtFishStmt = $conn->prepare($caughtFishQuery);
+    $caughtFishStmt->bind_param("s", $user);
+    $caughtFishStmt->execute();
+    $caughtFishResult = $caughtFishStmt->get_result();
 
-    foreach ($allFish as $fish) {
-        $isCaught = false; // Zakładamy, że ryba nie została złapana
-        
-        foreach ($caughtFish as $caught) {
-            if ($fish['nazwa'] == $caught['nazwa_ryby']) { // Porównujemy nazwy ryb
-                $isCaught = true; // Jeśli znajdziemy dopasowanie, oznaczamy rybę jako złapaną
-                break; // Nie ma potrzeby dalszego przeszukiwania
-            }
-        }
-        
-        if (!$isCaught) { // Jeśli ryba nie została oznaczona jako złapana
-            $notCaughtFish[] = $fish; // Dodajemy ją do listy ryb niezłapanych
-        }
-    }
-
-    echo "<h2>Ryby, których jeszcze nie złapał użytkownik <a href='history.php?nick=$user'>$vis_nick</a>:</h2>";
-    if (!empty($notCaughtFish)) {
+    if ($caughtFishResult->num_rows > 0) {
         echo "<table border='1'>
         <tr>
             <th>Nazwa ryby</th>
+            <th>Największa waga</th>
+            <th>Największy rozmiar</th>
         </tr>";
-        foreach ($notCaughtFish as $fish) {
-            echo "<tr><td>{$fish['nazwa']}</td></tr>";
-        }
-        echo "</table>";
-    } else {
-        echo "<p>Użytkownik $user złapał już wszystkie ryby!</p>";
-    }
 
-    echo "<br>";
+        while ($fish = $caughtFishResult->fetch_assoc()) {
+            echo "<tr>
+            <td>{$fish['nazwa_ryby']}</td>
+            <td>{$fish['max_waga']} kg</td>
+            <td>{$fish['max_rozmiar']} cm</td>
+            </tr>";
+        }
+        echo "</table><br>";
+    } else {
+        echo "<p>Użytkownik $user nie złapał jeszcze żadnych ryb.</p>";
+    }
 }
 
-echo "
-</body>
-</html>";
-
+echo "</body></html>";
 $conn->close();
 ?>
