@@ -60,5 +60,17 @@ if (isset($_SESSION['permission']) && $_SESSION['permission'] >= 4) {
 include 'close_database.php'; // Dołączanie pliku close_database.php do zamknięcia połączenia
 ?>
 
+<script>
+function potwierdzUsuniecie(nazwaRyby) {
+    const nazwaDecoded = decodeURIComponent(nazwaRyby); // Dekodowanie nazwy ryby
+    const userConfirmed = confirm("Czy na pewno chcesz usunąć rybę: " + nazwaDecoded + "?");
+
+    if (userConfirmed) {
+        // Przekierowanie do usun_rybe.php z nazwą ryby jako parametrem GET
+        window.location.href = "usun_rybe.php?nazwa=" + nazwaRyby;
+    }
+}
+</script>
+
 </body>
 </html>
