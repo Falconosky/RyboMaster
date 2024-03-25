@@ -56,8 +56,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['nazwa']) && (!empty($
 <a href="index.php"><img src="img/start.png" style="width: 5%"/></a>
 <form method="post" action="">
     <input type="text" name="nazwa" placeholder="Nazwa ryby" required>
-    <input type="number" step="0.01" name="min_waga" placeholder="Minimalna waga">
-    <input type="number" step="0.01" name="min_rozmiar" placeholder="Minimalny rozmiar">
+    <input type="number" step="0.01" name="min_waga" placeholder="Minimalna waga [kg]">
+    <input type="number" name="min_rozmiar" placeholder="Minimalny rozmiar [cm]">
     <button type="submit">Dodaj rybę</button>
 </form>
 

@@ -69,8 +69,8 @@ if (!empty($notCaughtFish)) {
     echo "<table border='1'>
     <tr>
         <th>Nazwa ryby</th>
-        <th>Minimalna waga</th>
-        <th>Minimalny rozmiar</th>
+        <th>Minimalna waga [kg]</th>
+        <th>Minimalny rozmiar [cm]</th>
     </tr>";
 
     foreach ($notCaughtFish as $name => $info) {
@@ -118,8 +118,8 @@ if ($result->num_rows > 0) {
         echo "<div class='catch-item'>
                 <div class='catch-info'>
                     <div class='opis_ryby'>Nazwa ryby: " . htmlspecialchars($row['nazwa_ryby']) . "</div>
-                    <div class='opis_ryby'>Waga: " . htmlspecialchars($row['waga']) . "</div>
-                    <div class='opis_ryby'>Rozmiar: " . ($row['rozmiar'] > 0 ? htmlspecialchars($row['rozmiar']) : '') . "</div>
+                    <div class='opis_ryby'>Waga: " . htmlspecialchars($row['waga']) . "kg" . "</div>
+                    <div class='opis_ryby'>Rozmiar: " . ($row['rozmiar'] > 0 ? htmlspecialchars($row['rozmiar']) : '') . "cm" . "</div>
                     <div class='opis_ryby'>Miejscówka: " . htmlspecialchars($row['miejscowka']) . "</div>
                     <div class='opis_ryby'>Data: " . htmlspecialchars($row['data']) . "</div>
                 </div>

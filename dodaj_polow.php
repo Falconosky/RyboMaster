@@ -81,8 +81,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['dodaj'])) {
             <option value="<?php echo htmlspecialchars($nazwaRyby); ?>"><?php echo htmlspecialchars($nazwaRyby); ?></option>
         <?php endforeach; ?>
     </select><br>
-    <input type="number" name="waga" placeholder="Waga ryby" required><br>
-    <input type="number" name="rozmiar" placeholder="Rozmiar ryby"><br>
+    <input type="number" step="0.01" name="waga" placeholder="Waga ryby [kg]" required><br>
+    <input type="number" name="rozmiar" placeholder="Rozmiar ryby [cm]"><br>
     <input type="text" name="miejscowka" placeholder="Miejscówka"><br>
     <input type="date" name="data" required><br>
     Zdjęcie (wymagane): <input type="file" name="zdjecie1" id="zdj1" required><br>
