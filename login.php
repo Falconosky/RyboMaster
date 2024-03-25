@@ -68,7 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 Prosze nie logować się swoim "normalnym" hasłem
 <form method="post" action="login.php">
     <input type="text" name="login" placeholder="Login">
-    <input type="text" name="password" placeholder="Password">
+    <input type="password" name="password" placeholder="Password">
     <button type="submit" name="dodaj">Zaloguj</button>
 </form>
 
