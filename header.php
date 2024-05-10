@@ -1,6 +1,8 @@
 <?php
     echo '
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style-tel.css">
+    <link rel="stylesheet" href="style-szer.css">
     <link rel="stylesheet" href="show_img.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

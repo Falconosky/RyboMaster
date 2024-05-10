@@ -37,7 +37,7 @@ $query->execute();
 $result = $query->get_result();
 $userData = $result->fetch_assoc();
 // Tutaj kod dla zalogowanych użytkowników
-echo "<div class='welcome'>Witaj " . htmlspecialchars($userData['vis_nick'] ?? '') . "</div>";
+echo "<div class='welcome'><h3>Witaj " . htmlspecialchars($userData['vis_nick'] ?? '') . "</h3></div>";
 
 // Pobierz wszystkie ryby z bazy danych
 $allFishQuery = "SELECT nazwa, min_rozmiar, min_waga FROM baza_ryb";
@@ -85,19 +85,20 @@ if (!empty($notCaughtFish)) {
     echo "<div class='fishes_left'><p>Gratulacje! Złapałeś już wszystkie dostępne ryby!</p></div>";
 }
 ?>
-
-<form action="wyswietl_ryby.php" method="post">
-    <button type="submit" name="wyswietl">Wyswietl wszystkie ryby tego sezonu</button>
-</form>
-<form action="dodaj_polow.php" method="post">
-    <button type="submit">Dodaj połów</button>
-</form>
-<form action="topka.php" method="post">
-    <button type="submit">Zobacz wyniki</button>
-</form>
-<form action="show_profile.php" method="post">
-    <button type="submit">Wyswietl szczegóły konta</button>
-</form>
+<div class="buttons">
+    <form action="wyswietl_ryby.php" method="post">
+        <button type="submit" name="wyswietl">Wyswietl wszystkie ryby tego sezonu</button>
+    </form>
+    <form action="dodaj_polow.php" method="post">
+        <button type="submit">Dodaj połów</button>
+    </form>
+    <form action="topka.php" method="post">
+        <button type="submit">Zobacz wyniki</button>
+    </form>
+    <form action="show_profile.php" method="post">
+        <button type="submit">Wyswietl szczegóły konta</button>
+    </form>
+</div>
 
 <?php
 
@@ -147,21 +148,21 @@ if ($result->num_rows > 0) {
               </div>";
     }
 } else {
-    echo "<div>Brak polowów.</div>";
+    echo "<div>Brak połowów.</div>";
 }
 
 echo "</div>"; // Zamknięcie diva zawierającego wszystkie połowy
 
 $stmt->close();
 
-echo "<a href='?logout'>Wyloguj</a>";
 // Sprawdź, czy zmienna sesyjna 'permission' istnieje i czy jej wartość jest większa lub równa 4
 if (isset($_SESSION['permission']) && $_SESSION['permission'] >= 5) {
     // Jeśli tak, wyświetl formularz
-    echo '<form action="user_manager.php" method="post">
+    echo '<div class="buttons"><form action="user_manager.php" method="post">
             <button type="submit" name="user_manager">Zarzadzaj użytkownikami</button>
-        </form>';
+        </form></div>';
 }
+echo "<div class='logout'><a href='?logout'>Wyloguj</a></div>";
 
 include 'close_database.php'; // Dołączenie pliku odpowiedzialnego za zamknięcie połączenia z bazą danych
 ?>

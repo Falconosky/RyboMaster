@@ -62,15 +62,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>RyboMaster</title>
+    <title>ZALOGUJ SIĘ!</title>
+    <?php include 'header.php'; ?>
 </head>
 <body>
-Prosze nie logować się swoim "normalnym" hasłem
-<form method="post" action="login.php">
-    <input type="text" name="login" placeholder="Login">
-    <input type="password" name="password" placeholder="Password">
-    <button type="submit" name="dodaj">Zaloguj</button>
-</form>
+<div class="login_topka_info">Prosze nie logować się swoim "normalnym" hasłem</div>
+<div class="login_form_log">
+    <form method="post" action="login.php">
+        <div class="login_linia"><div class="login_opis">Login: </div><input class="login_input" type="text" name="login" placeholder="Login"></div>
+        <div class="login_linia"><div class="login_opis">Hasło: </div><input class="login_input" type="password" name="password" placeholder="Password"></div>
+        <button class="login_button" type="submit" name="dodaj">Zaloguj</button>
+    </form>
+</div>
 
 </body>
 </html>
