@@ -5,6 +5,12 @@ if (!isset($_SESSION['user'])) {
     header("Location: login.php");
 }
 include 'connect_database.php';
+echo "<!DOCTYPE html>
+<html>
+<head>
+    <title>Topka użytkowników</title>";
+    include 'header.php';
+echo "</head>";
 echo "<a href='index.php'><img src='img/start.png' style='width: 5%'/></a>";
 
 $query = "SELECT vis_nick FROM uzytkownicy WHERE nick = ?";

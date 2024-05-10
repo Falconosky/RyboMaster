@@ -21,9 +21,9 @@ $usersResult = $conn->query($usersQuery);
 echo "<!DOCTYPE html>
 <html>
 <head>
-    <title>Topka użytkowników</title>
-    <?php include 'header.php'; ?>
-</head>
+    <title>Topka użytkowników</title>";
+    include 'header.php';
+echo "</head>
 <body>
 <a href='index.php' id='img_start'><img src='img/start.png'/></a>
 <h1>Topka użytkowników</h1>";
