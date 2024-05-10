@@ -9,7 +9,7 @@ session_start(); // Rozpocznij sesję na początku pliku
     <?php include 'header.php'; ?>
 </head>
 <body>
-<a href="index.php"><img src="img/start.png" style="width: 5%"/></a>
+<a href="index.php" id="img_start"><img src="img/start.png"/></a>
 
 <?php
 
@@ -37,7 +37,7 @@ $query->execute();
 $result = $query->get_result();
 $userData = $result->fetch_assoc();
 // Tutaj kod dla zalogowanych użytkowników
-echo "Witaj " . htmlspecialchars($userData['vis_nick'] ?? '') . "<br>" . "<br>";
+echo "<div class='welcome'>Witaj " . htmlspecialchars($userData['vis_nick'] ?? '') . "</div>";
 
 // Pobierz wszystkie ryby z bazy danych
 $allFishQuery = "SELECT nazwa, min_rozmiar, min_waga FROM baza_ryb";
@@ -64,7 +64,7 @@ while ($fish = $allFishResult->fetch_assoc()) {
 $notCaughtFish = array_diff_key($allFish, array_flip($caughtFish)); // Użyto array_flip dla lepszej wydajności
 
 // Wyświetlenie tabeli z rybami, których użytkownik jeszcze nie złapał
-echo "<h2>Ryby, których jeszcze nie złapałeś:</h2>";
+echo "<div class='fishes_left'><h2>Ryby, których jeszcze nie złapałeś:</h2>";
 if (!empty($notCaughtFish)) {
     echo "<table border='1'>
     <tr>
@@ -80,9 +80,9 @@ if (!empty($notCaughtFish)) {
             <td>" . ($info['min_rozmiar'] ? $info['min_rozmiar'] : '') . "</td>
         </tr>";
     }
-    echo "</table>";
+    echo "</table></div>";
 } else {
-    echo "<p>Gratulacje! Złapałeś już wszystkie dostępne ryby!</p>";
+    echo "<div class='fishes_left'><p>Gratulacje! Złapałeś już wszystkie dostępne ryby!</p></div>";
 }
 ?>
 

@@ -24,7 +24,7 @@ echo "<!DOCTYPE html>
     <title>Topka użytkowników</title>
 </head>
 <body>
-<a href='index.php'><img src='img/start.png' style='width: 5%'/></a>
+<a href='index.php' id='img_start'><img src='img/start.png'/></a>
 <h1>Topka użytkowników</h1>";
 
 while ($userRow = $usersResult->fetch_assoc()) {

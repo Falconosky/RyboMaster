@@ -16,7 +16,7 @@ if (!isset($_SESSION['user'])) {
     <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
 </head>
 <body>
-<a href="index.php"><img src="img/start.png" style="width: 5%"/></a>
+<a href="index.php" id="img_start"><img src="img/start.png"/></a>
 <?php
 include 'connect_database.php';
 

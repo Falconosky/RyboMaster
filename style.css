@@ -1,11 +1,14 @@
 body{
     padding: 0;
     margin: 0;
-    max-width: 100%;
+    width: 100%;
+    justify-content: center;
     
     height: 1000px;
     color:white;
-    background-color: #0e0d1c;
+    background-image: url(img/background.jpg);
+    background-size: 40vw;
+    background-attachment: fixed;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
@@ -15,6 +18,44 @@ a{
 
 .catches-container{
     margin: 3vh 0 0 0;
+}
+
+.welcome{
+    width: 100%;
+    height: 10vh;
+    text-align: center;
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.fishes_left{
+    width: 100%;
+    position: relative;
+}
+
+.fishes_left>h2{
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.fishes_left>table{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    border: 0;
+}
+
+#img_start
+{
+    position: absolute;
+    top: 5vh;
+    left: 5vh;
+}
+
+#img_start > img{
+    width: 5vw;
 }
 
 .catch-item {

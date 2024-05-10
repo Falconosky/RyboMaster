@@ -46,7 +46,7 @@ include 'close_database.php';
     <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
 </head>
 <body>
-<a href="index.php"><img src="img/start.png" style="width: 5%"/></a>
+<a href="index.php" id="img_start"><img src="img/start.png"/></a>
 <h2>Profil użytkownika</h2>
 <p>Login: <?php echo htmlspecialchars($user); ?></p>
 <p>Nick: <?php echo htmlspecialchars($userData['vis_nick'] ?? ''); ?></p>

@@ -73,7 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['dodaj'])) {
     <title>RyboMaster</title>
 </head>
 <body>
-<a href="index.php"><img src="img/start.png" style="width: 5%"/></a>
+<a href="index.php" id="img_start"><img src="img/start.png"/></a>
 
 <form method="post" action="" enctype="multipart/form-data">
     Wybierz złapaną rybę: <select name="nazwaRyby" required>

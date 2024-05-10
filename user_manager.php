@@ -89,7 +89,7 @@ if ($result->num_rows > 0) {
     </style>
 </head>
 <body>
-<a href="index.php"><img src="img/start.png" style="width: 5%"/></a>
+<a href="index.php" id="img_start"><img src="img/start.png"/></a>
 <h2>Użytkownicy zweryfikowani</h2>
 <!-- Tabela dla zweryfikowanych użytkowników -->
 <?php displayUsersTable($verifiedUsers); ?>
