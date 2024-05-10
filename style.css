@@ -8,6 +8,7 @@ body{
     background-image: url(img/background.jpg);
     background-size: 40vw;
     background-attachment: fixed;
+    -webkit-fill-color: black; /* Dla Safari na iOS */
     font-family: 'Roboto', sans-serif;
     font-size: clamp(0px, 2.5vw, 18px);
 }
