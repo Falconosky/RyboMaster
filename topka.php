@@ -22,6 +22,7 @@ echo "<!DOCTYPE html>
 <html>
 <head>
     <title>Topka użytkowników</title>
+    <?php include 'header.php'; ?>
 </head>
 <body>
 <a href='index.php' id='img_start'><img src='img/start.png'/></a>

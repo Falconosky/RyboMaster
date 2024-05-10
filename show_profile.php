@@ -44,6 +44,7 @@ include 'close_database.php';
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>RyboMaster - profil</title>
     <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <?php include 'header.php'; ?>
 </head>
 <body>
 <a href="index.php" id="img_start"><img src="img/start.png"/></a>

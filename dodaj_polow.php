@@ -71,6 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['dodaj'])) {
 <html>
 <head>
     <title>RyboMaster</title>
+    <?php include 'header.php'; ?>
 </head>
 <body>
 <a href="index.php" id="img_start"><img src="img/start.png"/></a>

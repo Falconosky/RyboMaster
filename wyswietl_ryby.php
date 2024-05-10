@@ -14,6 +14,7 @@ if (!isset($_SESSION['user'])) {
     <title>Page Title</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <?php include 'header.php'; ?>
 </head>
 <body>
 <a href="index.php" id="img_start"><img src="img/start.png"/></a>

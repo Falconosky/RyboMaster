@@ -77,6 +77,7 @@ if ($result->num_rows > 0) {
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>RyboMaster - użytkownicy</title>
+    <?php include 'header.php'; ?>
     <style>
         table, th, td {
             border: 1px solid black;
